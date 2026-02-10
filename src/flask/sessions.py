@@ -371,6 +371,10 @@ class SecureCookieSessionInterface(SessionInterface):
         secure = self.get_cookie_secure(app)
         samesite = self.get_cookie_samesite(app)
 
+        # Add a "Vary: Cookie" header if the session was accessed at all.
+        if session.accessed:
+            response.vary.add("Cookie")
+
         # If the session is modified to be empty, remove the cookie.
         # If the session is empty, return without setting the cookie.
         if not session:
@@ -378,12 +382,9 @@ class SecureCookieSessionInterface(SessionInterface):
                 response.delete_cookie(
                     name, domain=domain, path=path, secure=secure, samesite=samesite
                 )
+                response.vary.add("Cookie")
 
             return
-
-        # Add a "Vary: Cookie" header if the session was accessed at all.
-        if session.accessed:
-            response.vary.add("Cookie")
 
         if not self.should_set_cookie(app, session):
             return
@@ -401,3 +402,4 @@ class SecureCookieSessionInterface(SessionInterface):
             secure=secure,
             samesite=samesite,
         )
+        response.vary.add("Cookie")
