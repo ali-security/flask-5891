@@ -5,7 +5,7 @@ on:
       - master
       - '*.x'
     paths-ignore:
-      - 'docs/**'
+      - docs/**
       - '*.md'
       - '*.rst'
   pull_request:
@@ -13,7 +13,7 @@ on:
       - master
       - '*.x'
     paths-ignore:
-      - 'docs/**'
+      - docs/**
       - '*.md'
       - '*.rst'
 jobs:
@@ -24,17 +24,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {name: Linux, python: '3.9', os: ubuntu-latest, tox: py39}
-          - {name: Windows, python: '3.9', os: windows-latest, tox: py39}
-          - {name: Mac, python: '3.9', os: macos-latest, tox: py39}
-          - {name: '3.8', python: '3.8', os: ubuntu-latest, tox: py38}
-          - {name: '3.7', python: '3.7', os: ubuntu-latest, tox: py37}
-          - {name: '3.6', python: '3.6', os: ubuntu-latest, tox: py36}
-          - {name: 'PyPy', python: pypy3, os: ubuntu-latest, tox: pypy3}
-          - {name: Typing, python: '3.9', os: ubuntu-latest, tox: typing}
+          - {name: Linux, python: '3.9', os: ubuntu-22.04, tox: py39}
+          - {name: Windows, python: '3.9', os: windows-2022, tox: py39}
+          - {name: Mac, python: '3.9', os: macos-14, tox: py39}
+          - {name: '3.8', python: '3.8', os: ubuntu-22.04, tox: py38}
+          - {name: '3.7', python: '3.7', os: ubuntu-22.04, tox: py37}
+          - {name: '3.6', python: '3.6', os: ubuntu-22.04, tox: py36}
+          - {name: PyPy, python: pypy3, os: ubuntu-22.04, tox: pypy3}
+          - {name: Typing, python: '3.9', os: ubuntu-22.04, tox: typing}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: MatteoH2O1999/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
       - name: update pip
@@ -46,7 +46,7 @@ jobs:
         id: pip-cache
         run: echo "::set-output name=dir::$(pip cache dir)"
       - name: cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip|${{ runner.os }}|${{ matrix.python }}|${{ hashFiles('setup.py') }}|${{ hashFiles('requirements/*.txt') }}
